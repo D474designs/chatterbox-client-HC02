@@ -5,8 +5,109 @@
 // };
 
 var app = {
+
+  server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+  username: 'anonymous',
+  roomname: 'lobby',
+  lastMessageId: 0,
+  friends: {},
+  messages: [],
+
+  // server: 'https://api.parse.com/1/classes/chatterbox/?order=-createdAt',
+  // chatRooms: {},
+  // myFriends: {},
+  // currentRoom: "lobby",
+  // chatMessages: [],
+
   init: function() {
-    return null;
+
+    // app.username = getParameterByName('username');
+    // //load templates
+    // app.roomTemplate = _.template($('#roomItem').html());
+    // app.messageTemplate = _.template($('#messageTemplate').html());
+    // app.update();
+    // setInterval(app.update, 1000);
+
+    // app.send
+
+    // document.getElementById("addFriend").onclick = handleUsernameClick;
+
+    $('.username').on('click', function() {
+      app.handleUsernameClick();
+    });
+    
+    // $('#messageForm').on('submit', function(e){
+    //   e.preventDefault();
+    //   var text = $('#inputText').val();
+    //   if(text.length<1){
+    //     return;
+    //   }
+    //   $('#inputText').val('');
+
+    // $("#button").on("click", function() {
+    //   console.log('All UR Base R Belong 2 Us');
+    //   app.handleUsernameClick();
+    // };
+
+    // $("#button").on("click", function() {
+    //   console.log('All UR Base R Belong 2 Us');
+    //   app.handleSubmit();
+    // };
+
+        // // Get username
+        // app.username = window.location.search.substr(10);
+        //
+        // // Cache jQuery selectors
+        // app.$message = $('#message');
+        // app.$chats = $('#chats');
+        // app.$roomSelect = $('#roomSelect');
+        // app.$send = $('#send');
+        //
+        // // Add listeners
+        // app.$chats.on('click', '.username', app.handleUsernameClick);
+        // app.$send.on('submit', app.handleSubmit);
+        // app.$roomSelect.on('change', app.handleRoomChange);
+        //
+        // // Fetch previous messages
+        // app.startSpinner();
+        // app.fetch(false);
+        //
+        // // Poll for new messages
+        // setInterval(function() {
+        //   app.fetch(true);
+        // }, 3000);
+
+        // app.username = getParameterByName('username');
+        // //load templates
+        // app.roomTemplate = _.template($('#roomItem').html());
+        // app.messageTemplate = _.template($('#messageTemplate').html());
+        // app.update();
+        // setInterval(app.update, 1000);
+
+        // $('.username').on('click', function(){ app.addFriend(); })
+        // $('#messageForm').on('submit', function(e){
+        //   e.preventDefault();
+        //   var text = $('#inputText').val();
+        //   if(text.length<1){
+        //     return;
+        //   }
+        //   $('#inputText').val('');
+        //
+        //   var sendObj = {username:app.username,
+        //     text:text,
+        //     roomname: app.currentRoom
+        //   };
+        //   app.send(sendObj);
+        // });
+        // $('#createRoomButton').on('click',function(){
+        //   console.log('after 31, or connection is broken');
+        //   var $el = $('#newRoomInput');
+        //
+        //   var roomName = $el.val();
+        //   app.chatRooms[roomName] = true;
+        //   app.currentRoom = roomName;
+        //   $el.val('');
+        // });
   },
 
   send: function(message) {
@@ -29,7 +130,7 @@ var app = {
   fetch: function() {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
-      url: undefined,
+      url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
       data: JSON.stringify(message),
       contentType: 'application/json',
@@ -69,11 +170,425 @@ var app = {
     $('#roomSelect').append('<li>' + newRoom + '</li>');
   },
 
-  addFriend: function() {
 
+  handleUsernameClick: function() {
+  //     // Get username from data attribute
+  // var username = $(event.target).data('username');
+  //
+  // if (username !== undefined) {
+  //   // Toggle friend
+  //   app.friends[username] = !app.friends[username];
+  //
+  //   // Escape the username in case it contains a quote
+  //   var selector = '[data-username="' + username.replace(/"/g, '\\\"') + '"]';
+  //
+  //   // Add 'friend' CSS class to all of that user's messages
+  //   var $usernames = $(selector).toggleClass('friend');
+  // }
+  },
+
+  handleSubmit: function() {
+  //       var message = {
+  //         username: app.username,
+  //         text: app.$message.val(),
+  //         roomname: app.roomname || 'lobby'
+  //       };
+  //
+  //       app.send(message);
+  //
+  //       // Stop the form from submitting
+  //       event.preventDefault();
+  // }
   },
 
 };
+
+// // YOUR CODE HERE:
+//
+//
+// var app ={
+//   // server: 'https://api.parse.com/1/classes/chatterbox',
+//   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+//   roomList: {},
+//   friendList: {},
+//
+//   init: function() {
+//     app.$roomSelect = $('#roomSelect');
+//
+//     app.fetch();
+//     setInterval(app.fetch, 20000);
+//
+//   },
+//
+//   send: function(message) {
+//     $.ajax({
+//     // always use this url
+//     // url: 'https://api.parse.com/1/classes/chatterbox',
+//     url: app.server,
+//     type: 'POST',
+//     data: JSON.stringify(message),
+//     contentType: 'application/json',
+//     success: function (data) {
+//       console.log('chatterbox: Message sent');
+//     },
+//     error: function (data) {
+//       // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+//       console.error('chatterbox: Failed to send message');
+//     }
+//   });
+//   },
+//
+//   fetch: function() {
+//     $.ajax({
+//     // always use this url
+//     //url: 'https://api.parse.com/1/classes/chatterbox',
+//     url: app.server,
+//     type: 'GET',
+//     // data: {order: '-createdAt'},
+//     data: {},
+//     contentType: 'application/json',
+//     success: function (data) {
+//       app.clearMessages();
+//       _.each(data.results, function(value) {
+//         app.addMessage(value);
+//       });
+//     },
+//
+//     error: function (data) {
+//       // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+//       console.error('chatterbox: Failed to fetch messages');
+//     }
+//     });
+//   },
+//
+//   clearMessages: function() {
+//     $('#chats').empty();
+//   },
+//
+//   addMessage: function(message) {
+//     var selectedRoom = $("#roomSelect option:selected").val();
+//     if (!selectedRoom) {
+//       selectedRoom = 'lobby';
+//     }
+//
+//     // if (selectedRoom === message.roomname) {
+//       // if (app.friendList[message.username]) {
+//       //   $('#chats').append('<div class="chat"><p class="friend"> <span class="username" data-username>' + _.escape(message.username) + '</span> : ' + _.escape(message.message) + ' ' + '<span class="roomname" data-roomname>' + _.escape(message.roomname) + '</span></p></div>');
+//       //   $('.username').click( function(value) {
+//       //     app.addFriend(value.target);
+//       //   });
+//       // } else {
+//         $('#chats').append('<div class="chat"><p>' + '<span class="username" data-username>' + _.escape(message.username) + '</span> : ' + _.escape(message.message) + ' ' + '<span class="roomname" data-roomname>' + _.escape(message.roomname) + '</span></p></div>');
+//         $('.username').click( function(value) {
+//           app.addFriend(value.target);
+//         });
+//       // }
+//     // }
+//     app.addRoom(message.roomname);
+//   },
+//
+//   addRoom: function(room) {
+//     if (room !== undefined && room !== '') {
+//       if (app.roomList[room] === undefined) {
+//         $('#roomSelect').append('<option value="' + room + '">' + room + '</option>');
+//         app.roomList[room] = true;
+//       }
+//     }
+//   },
+//
+//   addFriend: function(evt) {
+//     var username = $(evt).text();
+//     app.friendList[username] = true;
+//   },
+//
+//   handleSubmit: function(e) {
+//     e.preventDefault();
+//
+//     var username = $('.username2').text();
+//     // var message = _.escape($('.message2').val());
+//     var message = $('.message2').val();
+//     // var room = $('#roomSelect').val();
+//     var room = app.$roomSelect.val();
+//
+//     var messageObj = {
+//       // username: username,
+//       username: getUrlParameter('username'),
+//       message: message,
+//       roomname: room
+//     };
+//     console.log(messageObj);
+//
+//     //  var messageObj = {
+//     //   username: 'Jennifer1',
+//     //   message: '1111',
+//     //   roomname: 'lobby'
+//     // };
+//
+//     app.send(messageObj);
+//   }
+//
+// };
+
+// function getUrlParameter(sParam) {
+//   var sPageURL = window.location.search.substring(1);
+//   var sURLVariables = sPageURL.split('&');
+//   for (var i = 0; i < sURLVariables.length; i++) {
+//       var sParameterName = sURLVariables[i].split('=');
+//       if (sParameterName[0] == sParam) {
+//         return sParameterName[1];
+//       }
+//   }
+// }
+//
+// $( document ).ready(function() {
+//
+//     app.init();
+//
+//     var whoami = getUrlParameter('username');
+//     $('.username2').text(whoami);
+//
+//
+//     $('.submit').click( function(event) {
+//         app.handleSubmit(event);
+//     });
+// });
+// };
+//
+// var app = {
+//   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+//   username: 'anonymous',
+//   roomname: 'lobby',
+//   lastMessageId: 0,
+//   friends: {},
+//   messages: [],
+//
+//   init: function() {
+//     // Get username
+//     app.username = window.location.search.substr(10);
+//
+//     // Cache jQuery selectors
+//     app.$message = $('#message');
+//     app.$chats = $('#chats');
+//     app.$roomSelect = $('#roomSelect');
+//     app.$send = $('#send');
+//
+//     // Add listeners
+//     app.$chats.on('click', '.username', app.handleUsernameClick);
+//     app.$send.on('submit', app.handleSubmit);
+//     app.$roomSelect.on('change', app.handleRoomChange);
+//
+//     // Fetch previous messages
+//     app.startSpinner();
+//     app.fetch(false);
+//
+//     // Poll for new messages
+//     setInterval(function() {
+//       app.fetch(true);
+//     }, 3000);
+//   },
+//
+//   send: function(message) {
+//     app.startSpinner();
+//
+//     // POST the message to the server
+//     $.ajax({
+//       url: app.server,
+//       type: 'POST',
+//       data: message,
+//       success: function (data) {
+//         // Clear messages input
+//         app.$message.val('');
+//
+//         // Trigger a fetch to update the messages, pass true to animate
+//         app.fetch();
+//       },
+//       error: function (error) {
+//         console.error('chatterbox: Failed to send message', error);
+//       }
+//     });
+//   },
+//
+//   fetch: function(animate) {
+//     $.ajax({
+//       url: app.server,
+//       type: 'GET',
+//       data: { order: '-createdAt' },
+//       contentType: 'application/json',
+//       success: function(data) {
+//         // Don't bother if we have nothing to work with
+//         if (!data.results || !data.results.length) {
+//           return;
+//         }
+//
+//         // Store messages for caching later
+//         app.messages = data.results;
+//
+//         // Get the last message
+//         var mostRecentMessage = data.results[data.results.length - 1];
+//
+//         // Only bother updating the DOM if we have a new message
+//         if (mostRecentMessage.objectId !== app.lastMessageId) {
+//           // Update the UI with the fetched rooms
+//           app.renderRoomList(data.results);
+//
+//           // Update the UI with the fetched messages
+//           app.renderMessages(data.results, animate);
+//
+//           // Store the ID of the most recent message
+//           app.lastMessageId = mostRecentMessage.objectId;
+//         }
+//       },
+//       error: function(error) {
+//         console.error('chatterbox: Failed to fetch messages', error);
+//       }
+//     });
+//   },
+//
+//   clearMessages: function() {
+//     app.$chats.html('');
+//   },
+//
+//   renderMessages: function(messages, animate) {
+//     // Clear existing messages`
+//     app.clearMessages();
+//     app.stopSpinner();
+//     if (Array.isArray(messages)) {
+//       // Add all fetched messages that are in our current room
+//       messages
+//         .filter(function(message) {
+//           return message.roomname === app.roomname ||
+//                 app.roomname === 'lobby' && !message.roomname;
+//         })
+//         .forEach(app.renderMessage);
+//     }
+//
+//     // Make it scroll to the top
+//     if (animate) {
+//       $('body').animate({scrollTop: '0px'}, 'fast');
+//     }
+//   },
+//
+//   renderRoomList: function(messages) {
+//     app.$roomSelect.html('<option value="__newRoom">New room...</option>');
+//
+//     if (messages) {
+//       var rooms = {};
+//       messages.forEach(function(message) {
+//         var roomname = message.roomname;
+//         if (roomname && !rooms[roomname]) {
+//           // Add the room to the select menu
+//           app.renderRoom(roomname);
+//
+//           // Store that we've added this room already
+//           rooms[roomname] = true;
+//         }
+//       });
+//     }
+//
+//     // Select the menu option
+//     app.$roomSelect.val(app.roomname);
+//   },
+//
+//   renderRoom: function(roomname) {
+//     // Prevent XSS by escaping with DOM methods
+//     var $option = $('<option/>').val(roomname).text(roomname);
+//
+//     // Add to select
+//     app.$roomSelect.append($option);
+//   },
+//
+//   renderMessage: function(message) {
+//     if (!message.roomname) {
+//       message.roomname = 'lobby';
+//     }
+//
+//     // Create a div to hold the chats
+//     var $chat = $('<div class="chat"/>');
+//
+//     // Add in the message data using DOM methods to avoid XSS
+//     // Store the username in the element's data attribute
+//     var $username = $('<span class="username"/>');
+//     $username.text(message.username + ': ').attr('data-roomname', message.roomname).attr('data-username', message.username).appendTo($chat);
+//
+//     // Add the friend class
+//     if (app.friends[message.username] === true) {
+//       $username.addClass('friend');
+//     }
+//
+//     var $message = $('<br><span/>');
+//     $message.text(message.text).appendTo($chat);
+//
+//     // Add the message to the UI
+//     app.$chats.append($chat);
+//
+//   },
+//
+//   handleUsernameClick: function(event) {
+//
+//     // Get username from data attribute
+//     var username = $(event.target).data('username');
+//
+//     if (username !== undefined) {
+//       // Toggle friend
+//       app.friends[username] = !app.friends[username];
+//
+//       // Escape the username in case it contains a quote
+//       var selector = '[data-username="' + username.replace(/"/g, '\\\"') + '"]';
+//
+//       // Add 'friend' CSS class to all of that user's messages
+//       var $usernames = $(selector).toggleClass('friend');
+//     }
+//   },
+//
+//   handleRoomChange: function(event) {
+//
+//     var selectIndex = app.$roomSelect.prop('selectedIndex');
+//     // New room is always the first option
+//     if (selectIndex === 0) {
+//       var roomname = prompt('Enter room name');
+//       if (roomname) {
+//         // Set as the current room
+//         app.roomname = roomname;
+//
+//         // Add the room to the menu
+//         app.renderRoom(roomname);
+//
+//         // Select the menu option
+//         app.$roomSelect.val(roomname);
+//       }
+//     } else {
+//       app.startSpinner();
+//       // Store as undefined for empty names
+//       app.roomname = app.$roomSelect.val();
+//     }
+//     // Rerender messages
+//     app.renderMessages(app.messages);
+//   },
+//
+//   handleSubmit: function(event) {
+//     var message = {
+//       username: app.username,
+//       text: app.$message.val(),
+//       roomname: app.roomname || 'lobby'
+//     };
+//
+//     app.send(message);
+//
+//     // Stop the form from submitting
+//     event.preventDefault();
+//   },
+//
+//   startSpinner: function() {
+//     $('.spinner img').show();
+//     $('form input[type=submit]').attr('disabled', 'true');
+//   },
+//
+//   stopSpinner: function() {
+//     $('.spinner img').fadeOut('fast');
+//     $('form input[type=submit]').attr('disabled', null);
+//   }
+// };
+
 // jQuery.post();
 // $.get(URL,callback);
 
