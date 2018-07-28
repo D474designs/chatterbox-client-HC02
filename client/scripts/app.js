@@ -11,48 +11,48 @@ var app = {
 
   send: function(message) {
     $.ajax({
-    // This is the url you should use to communicate with the parse API server.
-    url: 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages',
-    type: 'POST',
-    data: JSON.stringify(message),
-    contentType: 'application/json',
-    success: function (data) {
-      console.log('chatterbox: Message sent');
-    },
-    error: function (data) {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-      console.error('chatterbox: Failed to send message', data);
-    }
-  });
-},
-
-fetch: function() {
-  $.ajax({
-  // This is the url you should use to communicate with the parse API server.
-  url: undefined,
-  type: 'GET',
-  data: JSON.stringify(message),
-  contentType: 'application/json',
-  success: function (data) {
-    console.log('chatterbox: Message sent');
+      // This is the url you should use to communicate with the parse API server.
+      url: 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages',
+      type: 'POST',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('chatterbox: Message sent');
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to send message', data);
+      }
+    });
   },
-  error: function (data) {
-    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-    console.error('chatterbox: Failed to send message', data);
-  }
-});
-},
 
-clearMessages: function() {
+  fetch: function() {
+    $.ajax({
+      // This is the url you should use to communicate with the parse API server.
+      url: undefined,
+      type: 'GET',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+        success: function (data) {
+          console.log('chatterbox: Message sent');
+        },
+        error: function (data) {
+          // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+          console.error('chatterbox: Failed to send message', data);
+        }
+    });
+  },
+
+  clearMessages: function() {
   	var node = document.getElementById('chats');
   	  while (node.firstChild){
   	  	node.removeChild(node.firstChild);
   	  }
-},
+  },
 
-renderMessage: function(message) {
+  renderMessage: function(message) {
     $('#chats').append('<li>' + message.username + ': ' + message.text + '</li>');
-},
+  },
 
   // $.post("demo_test_post.asp",
   // {
@@ -62,8 +62,18 @@ renderMessage: function(message) {
   // function(data, status) {
   //     alert("Data: " + data + "\nStatus: " + status);
   // });
-};
 
+  renderRoom: function(newRoom) {
+    // 	var room = '<div class="room" data-room="' + newRoom + '">' + newRoom + '</div>';
+    // $('#roomSelect').append(room);
+    $('#roomSelect').append('<li>' + newRoom + '</li>');
+  },
+
+  addFriend: function() {
+
+  },
+
+};
 // jQuery.post();
 // $.get(URL,callback);
 
@@ -470,7 +480,7 @@ renderMessage: function(message) {
 //   app.roomTemplate = _.template($('#roomItem').html());
 //   app.messageTemplate = _.template($('#messageTemplate').html());
 //   app.update();
-//   setInterval(app.update, 1000);
+//   setInterval(app.update, 100a0);
 //
 //   $('.username').on('click', function(){ app.addFriend(); })
 //   $('#messageForm').on('submit', function(e){
