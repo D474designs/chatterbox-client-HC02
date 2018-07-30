@@ -188,3 +188,7 @@ form input[type=text] {
 .messages {
   width: 50%;
 }
+
+.sendButton {
+  color: powederBlue;
+}

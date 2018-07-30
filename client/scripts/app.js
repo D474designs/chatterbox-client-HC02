@@ -35,7 +35,11 @@ var app = {
     $('.username').on('click', function() {
       app.handleUsernameClick();
     });
-    
+
+    $('.username').on('click', function() {
+      app.handleSubmit();
+    });
+
     // $('#messageForm').on('submit', function(e){
     //   e.preventDefault();
     //   var text = $('#inputText').val();
