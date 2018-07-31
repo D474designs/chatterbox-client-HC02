@@ -36,8 +36,8 @@ var app = {
       app.handleUsernameClick();
     });
 
-    $('.username').on('click', function() {
-      app.handleSubmit();
+    $('.sendButton').on('click', function() {
+      app.send();
     });
 
     // $('#messageForm').on('submit', function(e){
