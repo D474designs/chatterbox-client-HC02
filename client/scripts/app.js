@@ -1,211 +1,315 @@
+// video: 21:34
+var app = {
+  server: 'https://api.parse.com/1/classes/messages/',
+  username: 'anonymous',
+  roomname: 'lobby',
+  messages: [],
+  lastMessageId: 0,
+
+  init: function() {
+    app.username = window.location.search.substr(10);
+
+    app.$message = $('message');
+    app.$chats = $('chats');
+    app.$roomSelect = $('#roomSelect')
+    app.$send = $('#send');
+
+    app.$send.on('submit', app.handleSubmit);
+
+    app.fetch();
+
+    // setInterval(function() {
+    //   app.fetch();
+    // }, 3000)
+  },
+
+  fetch: function() {
+    $.ajax({
+      url: app.server,
+      type: 'GET',
+      data: {order: '-createdAt'},
+      success: function(data) {
+        if (!data.results || !data.results.length) { return; }
+
+        app.messages = data.results;
+
+        var mostRecentMessage = app.messages[app.messages.length - 1];
+
+        if (mostRecentMessage.objectId !== app.lastMessageId) {
+          app.renderMessages(app.messages);
+          }
+        console.dir(data);
+        console.log('AJAX completed.');
+      },
+      error: function(error) {
+        console.log('Fetch error.');
+        console.log(error);
+      }
+    })
+  },
+
+  renderMessages: function(messages) {
+    app.clearMessages();
+
+    messages.forEach(app.renderMessage);
+  },
+
+  clearMessages: function() {
+    app.$chats.html('');
+  },
+  renderMessage: function(message) {
+    var $chat = $('<div class="chat"/>');
+
+    var $username = $('<span class="username"/>');
+    $username.text(message.username + ': ').appendTo('$chat');
+
+    var $message = $('<br><span>');
+    $message.text(message.text).appendTo($chat);
+
+    app.$chats.append($chat);
+  },
+
+  handleSubmit: function(event) {
+    var message = {
+      username: app.username,
+      text: app.$message.val(),
+      roomname: app.roomname || 'lobby'
+    };
+
+    app.send(message);
+
+    event.preventDefault();
+  },
+
+  send: function(message) {
+    $.ajax({
+      url: app.server,
+      type: 'POST',
+      data: JSON.stringify(message),
+      success: function() {
+        app.$messages.val('');
+        app.fetch();
+      },
+      error: function(error) {
+        console.log('Failed to send message.', error);
+      }
+    });
+  },
+
+  escapeHTML: function(string) {
+    if (!string) { return; }
+    return string.replace(/[&<>"'=\/]/g, '');
+  }
+};
+
 // var message = {
 //   username: 'shawndrost',
 //   text: 'trololo',
 //   roomname: '4chan'
 // };
 
-var app = {
-
-  server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
-  username: 'anonymous',
-  roomname: 'lobby',
-  lastMessageId: 0,
-  friends: {},
-  messages: [],
-
-  // server: 'https://api.parse.com/1/classes/chatterbox/?order=-createdAt',
-  // chatRooms: {},
-  // myFriends: {},
-  // currentRoom: "lobby",
-  // chatMessages: [],
-
-  init: function() {
-
-    // app.username = getParameterByName('username');
-    // //load templates
-    // app.roomTemplate = _.template($('#roomItem').html());
-    // app.messageTemplate = _.template($('#messageTemplate').html());
-    // app.update();
-    // setInterval(app.update, 1000);
-
-    // app.send
-
-    // document.getElementById("addFriend").onclick = handleUsernameClick;
-
-    $('.username').on('click', function() {
-      app.handleUsernameClick();
-    });
-
-    $('.sendButton').on('click', function() {
-      app.send();
-    });
-
-    // $('#messageForm').on('submit', function(e){
-    //   e.preventDefault();
-    //   var text = $('#inputText').val();
-    //   if(text.length<1){
-    //     return;
-    //   }
-    //   $('#inputText').val('');
-
-    // $("#button").on("click", function() {
-    //   console.log('All UR Base R Belong 2 Us');
-    //   app.handleUsernameClick();
-    // };
-
-    // $("#button").on("click", function() {
-    //   console.log('All UR Base R Belong 2 Us');
-    //   app.handleSubmit();
-    // };
-
-        // // Get username
-        // app.username = window.location.search.substr(10);
-        //
-        // // Cache jQuery selectors
-        // app.$message = $('#message');
-        // app.$chats = $('#chats');
-        // app.$roomSelect = $('#roomSelect');
-        // app.$send = $('#send');
-        //
-        // // Add listeners
-        // app.$chats.on('click', '.username', app.handleUsernameClick);
-        // app.$send.on('submit', app.handleSubmit);
-        // app.$roomSelect.on('change', app.handleRoomChange);
-        //
-        // // Fetch previous messages
-        // app.startSpinner();
-        // app.fetch(false);
-        //
-        // // Poll for new messages
-        // setInterval(function() {
-        //   app.fetch(true);
-        // }, 3000);
-
-        // app.username = getParameterByName('username');
-        // //load templates
-        // app.roomTemplate = _.template($('#roomItem').html());
-        // app.messageTemplate = _.template($('#messageTemplate').html());
-        // app.update();
-        // setInterval(app.update, 1000);
-
-        // $('.username').on('click', function(){ app.addFriend(); })
-        // $('#messageForm').on('submit', function(e){
-        //   e.preventDefault();
-        //   var text = $('#inputText').val();
-        //   if(text.length<1){
-        //     return;
-        //   }
-        //   $('#inputText').val('');
-        //
-        //   var sendObj = {username:app.username,
-        //     text:text,
-        //     roomname: app.currentRoom
-        //   };
-        //   app.send(sendObj);
-        // });
-        // $('#createRoomButton').on('click',function(){
-        //   console.log('after 31, or connection is broken');
-        //   var $el = $('#newRoomInput');
-        //
-        //   var roomName = $el.val();
-        //   app.chatRooms[roomName] = true;
-        //   app.currentRoom = roomName;
-        //   $el.val('');
-        // });
-  },
-
-  send: function(message) {
-    $.ajax({
-      // This is the url you should use to communicate with the parse API server.
-      url: 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages',
-      type: 'POST',
-      data: JSON.stringify(message),
-      contentType: 'application/json',
-      success: function (data) {
-        console.log('chatterbox: Message sent');
-      },
-      error: function (data) {
-        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-        console.error('chatterbox: Failed to send message', data);
-      }
-    });
-  },
-
-  fetch: function() {
-    $.ajax({
-      // This is the url you should use to communicate with the parse API server.
-      url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
-      type: 'GET',
-      data: JSON.stringify(message),
-      contentType: 'application/json',
-        success: function (data) {
-          console.log('chatterbox: Message sent');
-        },
-        error: function (data) {
-          // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-          console.error('chatterbox: Failed to send message', data);
-        }
-    });
-  },
-
-  clearMessages: function() {
-  	var node = document.getElementById('chats');
-  	  while (node.firstChild){
-  	  	node.removeChild(node.firstChild);
-  	  }
-  },
-
-  renderMessage: function(message) {
-    $('#chats').append('<li>' + message.username + ': ' + message.text + '</li>');
-  },
-
-  // $.post("demo_test_post.asp",
-  // {
-  //     name: "Donald Duck",
-  //     city: "Duckburg"
-  // },
-  // function(data, status) {
-  //     alert("Data: " + data + "\nStatus: " + status);
-  // });
-
-  renderRoom: function(newRoom) {
-    // 	var room = '<div class="room" data-room="' + newRoom + '">' + newRoom + '</div>';
-    // $('#roomSelect').append(room);
-    $('#roomSelect').append('<li>' + newRoom + '</li>');
-  },
-
-
-  handleUsernameClick: function() {
-  //     // Get username from data attribute
-  // var username = $(event.target).data('username');
-  //
-  // if (username !== undefined) {
-  //   // Toggle friend
-  //   app.friends[username] = !app.friends[username];
-  //
-  //   // Escape the username in case it contains a quote
-  //   var selector = '[data-username="' + username.replace(/"/g, '\\\"') + '"]';
-  //
-  //   // Add 'friend' CSS class to all of that user's messages
-  //   var $usernames = $(selector).toggleClass('friend');
-  // }
-  },
-
-  handleSubmit: function() {
-  //       var message = {
-  //         username: app.username,
-  //         text: app.$message.val(),
-  //         roomname: app.roomname || 'lobby'
-  //       };
-  //
-  //       app.send(message);
-  //
-  //       // Stop the form from submitting
-  //       event.preventDefault();
-  // }
-  },
-
-};
+// var app = {
+//
+//   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+//   username: 'anonymous',
+//   roomname: 'lobby',
+//   lastMessageId: 0,
+//   friends: {},
+//   messages: [],
+//
+//   // server: ''https://api.parse.com/1/classes/chatterbox/?order=-createdAt',
+//   // chatRooms: {},
+//   // myFriends: {},
+//   // currentRoom: "lobby",
+//   // chatMessages: [],
+//
+//   init: function() {
+//
+//     // app.username = getParameterByName('username');
+//     // //load templates
+//     // app.roomTemplate = _.template($('#roomItem').html());
+//     // app.messageTemplate = _.template($('#messageTemplate').html());
+//     // app.update();
+//     // setInterval(app.update, 1000);
+//
+//     // app.send
+//
+//     // document.getElementById("addFriend").onclick = handleUsernameClick;
+//
+//     $('.username').on('click', function() {
+//       app.handleUsernameClick();
+//     });
+//
+//     $('.sendButton').on('click', function() {
+//       app.send();
+//     });
+//
+//     // $('#messageForm').on('submit', function(e){
+//     //   e.preventDefault();
+//     //   var text = $('#inputText').val();
+//     //   if(text.length<1){
+//     //     return;
+//     //   }
+//     //   $('#inputText').val('');
+//
+//     // $("#button").on("click", function() {
+//     //   console.log('All UR Base R Belong 2 Us');
+//     //   app.handleUsernameClick();
+//     // };
+//
+//     // $("#button").on("click", function() {
+//     //   console.log('All UR Base R Belong 2 Us');
+//     //   app.handleSubmit();
+//     // };
+//
+//         // // Get username
+//         // app.username = window.location.search.substr(10);
+//         //
+//         // // Cache jQuery selectors
+//         // app.$message = $('#message');
+//         // app.$chats = $('#chats');
+//         // app.$roomSelect = $('#roomSelect');
+//         // app.$send = $('#send');
+//         //
+//         // // Add listeners
+//         // app.$chats.on('click', '.username', app.handleUsernameClick);
+//         // app.$send.on('submit', app.handleSubmit);
+//         // app.$roomSelect.on('change', app.handleRoomChange);
+//         //
+//         // // Fetch previous messages
+//         // app.startSpinner();
+//         // app.fetch(false);
+//         //
+//         // // Poll for new messages
+//         // setInterval(function() {
+//         //   app.fetch(true);
+//         // }, 3000);
+//
+//         // app.username = getParameterByName('username');
+//         // //load templates
+//         // app.roomTemplate = _.template($('#roomItem').html());
+//         // app.messageTemplate = _.template($('#messageTemplate').html());
+//         // app.update();
+//         // setInterval(app.update, 1000);
+//
+//         // $('.username').on('click', function(){ app.addFriend(); })
+//         // $('#messageForm').on('submit', function(e){
+//         //   e.preventDefault();
+//         //   var text = $('#inputText').val();
+//         //   if(text.length<1){
+//         //     return;
+//         //   }
+//         //   $('#inputText').val('');
+//         //
+//         //   var sendObj = {username:app.username,
+//         //     text:text,
+//         //     roomname: app.currentRoom
+//         //   };
+//         //   app.send(sendObj);
+//         // });
+//         // $('#createRoomButton').on('click',function(){
+//         //   console.log('after 31, or connection is broken');
+//         //   var $el = $('#newRoomInput');
+//         //
+//         //   var roomName = $el.val();
+//         //   app.chatRooms[roomName] = true;
+//         //   app.currentRoom = roomName;
+//         //   $el.val('');
+//         // });
+//   },
+//
+//   send: function(message) {
+//     $.ajax({
+//       // This is the url you should use to communicate with the parse API server.
+//       url: 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages',
+//       type: 'POST',
+//       data: JSON.stringify(message),
+//       contentType: 'application/json',
+//       success: function (data) {
+//         console.log('chatterbox: Message sent');
+//       },
+//       error: function (data) {
+//         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+//         console.error('chatterbox: Failed to send message', data);
+//       }
+//     });
+//   },
+//
+//   fetch: function() {
+//     $.ajax({
+//       // This is the url you should use to communicate with the parse API server.
+//       url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+//       type: 'GET',
+//       data: JSON.stringify(message),
+//       contentType: 'application/json',
+//         success: function (data) {
+//           console.log('chatterbox: Message sent');
+//         },
+//         error: function (data) {
+//           // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+//           console.error('chatterbox: Failed to send message', data);
+//         }
+//     });
+//   },
+//
+//   clearMessages: function() {
+//   	var node = document.getElementById('chats');
+//   	  while (node.firstChild){
+//   	  	node.removeChild(node.firstChild);
+//   	  }
+//   },
+//
+//   renderMessage: function(message) {
+//     $('#chats').append('<li>' + message.username + ': ' + message.text + '</li>');
+//   },
+//
+//   // $.post("demo_test_post.asp",
+//   // {
+//   //     name: "Donald Duck",
+//   //     city: "Duckburg"
+//   // },
+//   // function(data, status) {
+//   //     alert("Data: " + data + "\nStatus: " + status);
+//   // });
+//
+//   renderRoom: function(newRoom) {
+//     // 	var room = '<div class="room" data-room="' + newRoom + '">' + newRoom + '</div>';
+//     // $('#roomSelect').append(room);
+//     $('#roomSelect').append('<li>' + newRoom + '</li>');
+//   },
+//
+//
+//   handleUsernameClick: function() {
+//   //     // Get username from data attribute
+//   // var username = $(event.target).data('username');
+//   //
+//   // if (username !== undefined) {
+//   //   // Toggle friend
+//   //   app.friends[username] = !app.friends[username];
+//   //
+//   //   // Escape the username in case it contains a quote
+//   //   var selector = '[data-username="' + username.replace(/"/g, '\\\"') + '"]';
+//   //
+//   //   // Add 'friend' CSS class to all of that user's messages
+//   //   var $usernames = $(selector).toggleClass('friend');
+//   // }
+//   },
+//
+//   handleSubmit: function() {
+//   //       var message = {
+//   //         username: app.username,
+//   //         text: app.$message.val(),
+//   //         roomname: app.roomname || 'lobby'
+//   //       };
+//   //
+//   //       app.send(message);
+//   //
+//   //       // Stop the form from submitting
+//   //       event.preventDefault();
+//   // }
+//   },
+//
+// };
 
 // // YOUR CODE HERE:
 //

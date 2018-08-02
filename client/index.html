@@ -1,3 +1,38 @@
+<!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <title>ChatterBox!</title>
+      <link rel="stylesheet" href="styles/styles.css">
+
+      <script src="bower_components/jquery/dist/jquery.js"></script>
+
+      <script src="env/config.js"></script>
+      <script src="scripts/app.js"></script>
+    </head>
+    <body>
+      <div id="main">
+        <h1>D474designs</h1>
+        <div id="rooms">
+          Room:
+          <select id="roomSelect">
+          </select>
+        </div>
+        <form action="#" id="send" method="post">
+          <input class="text" type="message" id="message">
+          <input class="submit" type="submit" value="Submit">
+        </form> </div
+      <div id="chats"></div>
+      <script>
+      $(function(){
+        app.init()
+      });
+    </script>
+  </body>
+</html>
+
+
+
 <!-- <!doctype html>
 <html>
   <head>
@@ -44,7 +79,8 @@
       $("p").click(function(){
           $(this).hide();
       }); -->
-<!doctype html>
+
+<!-- <!doctype html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,14 +104,14 @@
       }
     </script>
 
-    <!-- <script>
+    <script>
     $( function() {
       $( ".widget input[type=submit], .widget a, .widget button" ).button();
       $( "button, input, a" ).click( function( event ) {
         event.preventDefault();
       } );
     } );
-    </script> -->
+    </script>
 
       <script src="env/config.js"></script>
       <script src="scripts/app.js"></script>
@@ -98,9 +134,9 @@
         <button id="roomButton">Switch Rooms</button>
       </div>
 
-      <!-- <input id="addFriend" type="button" value="Frandz" onclick="handleUsernameClick();" /> -->
+      <input id="addFriend" type="button" value="Frandz" onclick="handleUsernameClick();" />
 
-<!-- <ul class="messages"> -->
+<ul class="messages">
 
 
     </div>
@@ -108,4 +144,4 @@
     <h3>powered by <a href="https://D474designs.webs.com">D474designs</A></h3>
   </center>
   </body>
-</html>
+</html> -->
