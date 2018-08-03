@@ -5,6 +5,7 @@ var app = {
   roomname: 'lobby',
   messages: [],
   lastMessageId: 0,
+  friends: {},
 
   init: function() {
     app.username = window.location.search.substr(10);
@@ -15,12 +16,15 @@ var app = {
     app.$send = $('#send');
 
     app.$send.on('submit', app.handleSubmit);
+    app.$roomSelect.on('change', app.handleRoomChange);
+    app.$chats.on('click', '.username', app.handleUsernameClick);
 
+    app.startSpinner();
     app.fetch();
 
-    // setInterval(function() {
-    //   app.fetch();
-    // }, 3000)
+    setInterval(function() {
+      app.fetch();
+    }, 3000)
   },
 
   fetch: function() {
@@ -36,10 +40,10 @@ var app = {
         var mostRecentMessage = app.messages[app.messages.length - 1];
 
         if (mostRecentMessage.objectId !== app.lastMessageId) {
+
+          app.renderRoomList(app.messages);
           app.renderMessages(app.messages);
           }
-        console.dir(data);
-        console.log('AJAX completed.');
       },
       error: function(error) {
         console.log('Fetch error.');
@@ -51,7 +55,19 @@ var app = {
   renderMessages: function(messages) {
     app.clearMessages();
 
-    messages.forEach(app.renderMessage);
+    messages
+      .filter(function(message) {
+        if (app.roomname === 'lobby' && !message.roomname) {
+          return true;
+        } else if (message.roomname === app.roomname) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .forEach(app.renderMessage);
+
+    app.stopSpinner();
   },
 
   clearMessages: function() {
@@ -61,7 +77,14 @@ var app = {
     var $chat = $('<div class="chat"/>');
 
     var $username = $('<span class="username"/>');
-    $username.text(message.username + ': ').appendTo('$chat');
+    $username
+      .text(message.username + ': ')
+      .attr('data-username', message.username)
+      .appendTo('$chat');
+
+    if (app.friends[messages.username] === true) {
+      $username.addClass('friend');
+    }
 
     var $message = $('<br><span>');
     $message.text(message.text).appendTo($chat);
@@ -82,6 +105,8 @@ var app = {
   },
 
   send: function(message) {
+    app.startSpinner();
+
     $.ajax({
       url: app.server,
       type: 'POST',
@@ -96,10 +121,70 @@ var app = {
     });
   },
 
-  escapeHTML: function(string) {
-    if (!string) { return; }
-    return string.replace(/[&<>"'=\/]/g, '');
-  }
+  renderRoomList: function(messages) {
+    app.$roomSelect.html('<option value="__newRoom">New room...</option></select>');
+    if (messages) {
+      var rooms = {};
+      messages.forEach(function(message) {
+        var roomname = message.roomname;
+        if (roomname && !rooms[roomname]) {
+          app.renderRoom(roomname);
+
+          rooms[roomname] = true;
+        }
+      });
+    }
+
+    app.$roomSelect.val(app.roomname);
+  },
+
+  renderRoom: function(roomname) {
+    var $option = $('<option/>').val(roomname).text(roomname);
+
+    app.$roomSelect.appen($option);
+  },
+
+  handleRoomChange: function(event) {
+    var selectIndex = app.$roomSelect.prop('selectedIndex');
+    if (selectIndex === 0) {
+      var roomname = prompt('Enter New Room Name.');
+
+      if (roomname) {
+        app.roomname = roomname;
+        app.renderRoom(roomname);
+        app.$roomSelect.val(roomname);
+      }
+    } else {
+      app.roomname = app.$roomSelect.val();
+    }
+
+    app.renderMessage(app.messages);
+  },
+
+  handleUsernameClick: function (event) {
+    var username = $(event.target).data('username');
+
+    if (username !== undefined) {
+      app.friends[username] = !app.friends[username];
+
+      var selector = '[data-username="' + username.replace(/"/g, '\\\"' + '"]');
+      var $usernames = $(selector).toggleClass('friend');
+    }
+  },
+
+  startSpinner: function() {
+    $('.spinner img').show();
+    $('form input[type=submit]').attr('disabled', true);
+  },
+
+  stopSpinner: function() {
+    $('.spinner img').fadeOut('fast');
+    $('form input[type=submit]').attr('disabled', null);
+  },
+  // escapeHTML: function(string) {
+  //   if (!string) { return; }
+  //   return string.replace(/[&<>"'=\/]/g, '');
+  // }
 };
 
 // var message = {
